@@ -9,6 +9,7 @@ namespace CellularAutomaton
     {
         private bool alive;
         private OwnerSO owner;
+        private Vector2Int position;
 
         public Cell()
         {
@@ -28,5 +29,6 @@ namespace CellularAutomaton
                   else { owner = null; alive = false; }
                 }
         }
+        public Vector2Int Position { get { return position; } set { position = value; } }
     }
 }

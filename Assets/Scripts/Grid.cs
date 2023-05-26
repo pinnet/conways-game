@@ -30,7 +30,10 @@ namespace CellularAutomaton
         public Cell this[int x, int y]
         {
             get { return _cells[x, y]; }
-            set { _cells[x, y] = value; }
+            set {
+                value.Position = new Vector2Int(x, y);
+                _cells[x, y] = value;
+            }
         }
         private void InitArray()
         {
@@ -38,7 +41,9 @@ namespace CellularAutomaton
             {
                 for (int j = 0; j < Rows; j++)
                 {
-                    _cells[i, j] = new Cell();
+                    Cell cell = new Cell();
+                    cell.Position = new Vector2Int(i, j);
+                    _cells[i, j] = cell;
                 }
             }
 
@@ -68,7 +73,7 @@ namespace CellularAutomaton
                     uint neighbors = CountNeighbors(i, j);
                     if (_cells[i, j].Alive)
                     {
-                        if (neighbors < 2 | neighbors > 3) 
+                        if (neighbors <= 2 | neighbors > 3) 
                         { 
                             next[i, j].Alive = false; 
                         }
@@ -79,11 +84,10 @@ namespace CellularAutomaton
                     }
                     else
                     {
-                        if (neighbors == 3) 
-                        { 
-                            next[i, j].Owner = owner;
+                        if (neighbors == 3)
+                        {
+                            next[i, j].Owner = owner; 
                         }
-                        else { next[i, j].Alive = false; }
                     }
                 }
             }

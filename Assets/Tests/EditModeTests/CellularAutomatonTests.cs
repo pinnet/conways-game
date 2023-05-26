@@ -155,22 +155,10 @@ public class CellularAutomatonTests
     [Test]
     public void CellAliveAfterOwnerAddTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(3, 3);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
-            myGrid[1, 1].Owner = owner;
-            Assert.IsTrue(myGrid[1, 1].Alive);
-        }
+        var myGrid = SetupTestGrid(3, 3);
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        myGrid[1, 1].Owner = owner;
+        Assert.IsTrue(myGrid[1, 1].Alive);
     }
 
     /* Test if grid cell is dead after
@@ -179,23 +167,12 @@ public class CellularAutomatonTests
     [Test]
     public void CellDeadAfterOwnerNulledTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(3, 3);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
-            myGrid[1, 1].Owner = owner;
-            myGrid[1, 1].Owner = null;
-            Assert.IsFalse(myGrid[1, 1].Alive);
-        }
+        var myGrid = SetupTestGrid(3, 3);
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        myGrid[1, 1].Owner = owner;
+        myGrid[1, 1].Owner = null;
+        Assert.IsFalse(myGrid[1, 1].Alive);
+        
     }
 
     /* Test if cell neighbor count is correct
@@ -204,23 +181,12 @@ public class CellularAutomatonTests
     [Test]
     public void CountCellNeighborTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(5, 5);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+        var myGrid = SetupTestGrid(5, 5);
 
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
          
          /*
-         *          0  1  2  3  4  5
+         *          0  1  2  3  4  
          *        0 x
          *        
          *        1
@@ -231,7 +197,6 @@ public class CellularAutomatonTests
          *          
          *        4       x  x  x
          *          
-         *        5
          */
 
             myGrid[0, 0].Owner = owner;
@@ -251,10 +216,7 @@ public class CellularAutomatonTests
             myGrid[4, 3].Owner = owner;
             Assert.IsTrue(myGrid.CountNeighbors(3, 3) == 7);
             myGrid[4, 4].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 3) == 8);
-
-        }
-        
+            Assert.IsTrue(myGrid.CountNeighbors(3, 3) == 8);   
     }
 
     /* Test if cell neighbor count is correct
@@ -264,23 +226,12 @@ public class CellularAutomatonTests
     [Test]
     public void CountCellNeighborLeftEdgeTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(6, 6);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+        var myGrid = SetupTestGrid(5, 5);
 
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
 
             /*
-            *          0  1  2  3  4  5
+            *          0  1  2  3  4
             *        0 x
             *        
             *        1
@@ -290,8 +241,7 @@ public class CellularAutomatonTests
             *        3  ? x
             *          
             *        4  x x
-            *          
-            *        5
+            *      
             */
 
             myGrid[0, 0].Owner = owner;
@@ -306,7 +256,7 @@ public class CellularAutomatonTests
             Assert.IsTrue(myGrid.CountNeighbors(3, 0) == 4);
             myGrid[4, 1].Owner = owner;
             Assert.IsTrue(myGrid.CountNeighbors(3, 0) == 5);
-        }
+        
 
     }
 
@@ -317,50 +267,37 @@ public class CellularAutomatonTests
     [Test]
     public void CountCellNeighborRightEdgeTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(6, 6);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+        var myGrid = SetupTestGrid(5, 5);
 
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
 
             /*
-            *          0  1  2  3  4  5
+            *          0  1  2  3  4  
             *        0 x
             *        
             *        1
             *          
-            *        2              x x
+            *        2           x  x
             *          
-            *        3              x ?
+            *        3           x  ?
             *          
-            *        4              x x
+            *        4           x  x
             *          
-            *        5
+            *   
             */
 
-    myGrid[0, 0].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 0);
+            myGrid[0, 0].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 0);
+            myGrid[2, 3].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 1);
             myGrid[2, 4].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 1);
-            myGrid[2, 5].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 2);
-            myGrid[3, 4].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 3);
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 2);
+            myGrid[3, 3].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 3);
+            myGrid[4, 3].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 4);
             myGrid[4, 4].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 4);
-            myGrid[4, 5].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(3, 5) == 5);
-        }
-
+            Assert.IsTrue(myGrid.CountNeighbors(3, 4) == 5);
     }
 
     /* Test if cell neighbor count is correct
@@ -370,50 +307,37 @@ public class CellularAutomatonTests
     [Test]
     public void CountCellNeighborBottomEdgeTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(6, 6);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+        var myGrid = SetupTestGrid(5, 5);
 
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
 
             /*
-            *          0  1  2  3  4  5
+            *          0  1  2  3  4 
             *        0 x
             *        
             *        1
             *          
             *        2  
             *          
-            *        3  
+            *        3  x x x
             *          
-            *        4  x x x
+            *        4  x ? x
             *          
-            *        5  x ? x
+           
             */
 
             myGrid[0, 0].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 0);
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 0);
+            myGrid[3, 0].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 1);
+            myGrid[3, 1].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 2);
+            myGrid[3, 2].Owner = owner;
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 3);
             myGrid[4, 0].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 1);
-            myGrid[4, 1].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 2);
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 4);
             myGrid[4, 2].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 3);
-            myGrid[5, 0].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 4);
-            myGrid[5, 2].Owner = owner;
-            Assert.IsTrue(myGrid.CountNeighbors(5, 1) == 5);
-        }
-
+            Assert.IsTrue(myGrid.CountNeighbors(4, 1) == 5);
     }
 
     /* Test if cell neighbor count is correct
@@ -423,23 +347,12 @@ public class CellularAutomatonTests
     [Test]
     public void CountCellNeighborTopEdgeTest()
     {
-        CellularAutomaton.Grid myGrid = null;
-        try
-        {
-            myGrid = new CellularAutomaton.Grid(6, 6);
-        }
-        catch (System.Exception)
-        {
-            Assert.Fail("Constructor Exception Error");
-        }
-        finally
-        {
-            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+        var myGrid = SetupTestGrid(5, 5);
 
-            var owner = ScriptableObject.CreateInstance<OwnerSO>();
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
 
             /*
-            *          0  1  2  3  4  5
+            *          0  1  2  3  4  
             *        0 x     x  ?  x
             *                           
             *        1       x  x  x
@@ -450,7 +363,6 @@ public class CellularAutomatonTests
             *          
             *        4               
             *          
-            *        5
             */
 
             myGrid[0, 0].Owner = owner;
@@ -465,25 +377,212 @@ public class CellularAutomatonTests
             Assert.IsTrue(myGrid.CountNeighbors(0, 3) == 4);
             myGrid[1, 4].Owner = owner;
             Assert.IsTrue(myGrid.CountNeighbors(0, 3) == 5);
-        }
-
     }
 
 
+    /* Test Advance function if it generates
+     * expected cells for no neighbor generation
+     */
+    [Test]
+    public void AdvanceGenerationNoNeighborTest()
+    {
+        var myGrid = SetupTestGrid(5, 5);
+
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+
+        /*
+        *          0  1  2  3  4   
+        *        0     
+        *                           
+        *        1   ?             
+        *                        
+        *        2                              
+        *                         
+        *        3                 
+        *          
+        *        4           
+        *           
+        */
+
+        myGrid[1, 1].Owner = owner;
+        Assert.IsTrue(myGrid[1, 1].Alive);
+
+        myGrid.Advance(owner); // test function
+
+        Assert.IsFalse(myGrid[2, 2].Alive); // Should be dead
+    }
+
+    /* Test Advance function if it generates
+     * expected cells for one neighbor generation
+     */
+    [Test]
+    public void AdvanceGenerationOneNeighborTest()
+    {
+        var myGrid = SetupTestGrid(5, 5);
+
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+
+            /*
+            *          0  1  2  3  4   
+            *        0 x   
+            *                           
+            *        1   ?             
+            *                        
+            *        2                              
+            *                         
+            *        3                 
+            *          
+            *        4           
+            *           
+            */
+
+            myGrid[0, 0].Owner = owner;
+            myGrid[1, 1].Owner = owner;
+            Assert.IsTrue(myGrid[1, 1].Alive);
+
+            myGrid.Advance(owner); // test function
+
+            Assert.IsFalse(myGrid[2, 2].Alive); // Should be dead
+    }
 
 
+    /* Test Advance function if it generates
+     * expected cells for a two neighbor generation
+     */
+    [Test]
+    public void AdvanceGenerationTwoNeighborTest()
+    {
+        var myGrid = SetupTestGrid(5, 5);
+
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+
+            /*
+            *          0  1  2  3  4  5
+            *        0    
+            *                           
+            *        1       x  x     
+            *                        
+            *        2    .  ?                      
+            *                         
+            *        3    .            
+            *          
+            *        4           
+            *          
+            *        5   
+            */
+           
+
+            // by 2 test
+            myGrid[1,2].Owner = owner;
+            myGrid[1,3].Owner = owner;
+            myGrid[2,2].Owner = owner;
+  
+            Assert.IsTrue(myGrid[2, 2].Alive);
+
+            myGrid.Advance(owner);
+
+            Assert.IsFalse(myGrid[2, 2].Alive); // Should be dead
+
+    }
+
+    /* Test Advance function if it generates
+     * expected cells for a Three neighbor generation
+     */
+    [Test]
+    public void AdvanceGenerationThreeNeighborTest()
+    {
+        var myGrid = SetupTestGrid(5, 5);
+
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+
+        /*
+        *          0  1  2  3  4  5
+        *        0    
+        *                           
+        *        1    x  x  x     
+        *                        
+        *        2       ?                      
+        *                         
+        *        3                 
+        *          
+        *        4           
+        *          
+        *        5   
+        */
 
 
+        // by 2 test
+        myGrid[1, 1].Owner = owner;
+        myGrid[1, 2].Owner = owner;
+        myGrid[1, 3].Owner = owner;
+
+        Assert.IsFalse(myGrid[2, 2].Alive);
+
+        myGrid.Advance(owner);
+
+        Assert.IsTrue(myGrid[2, 2].Alive); // Should be alive
+
+    }
+
+    /* Test Advance function if it generates
+     * expected cells for a Four neighbor generation
+     */
+    [Test]
+    public void AdvanceGenerationFourNeighborTest()
+    {
+        var myGrid = SetupTestGrid(5, 5);
+
+        var owner = ScriptableObject.CreateInstance<OwnerSO>();
+
+        /*
+        *          0  1  2  3  4  5
+        *        0    
+        *                           
+        *        1    x  x  x     
+        *                        
+        *        2       ?  x                    
+        *                         
+        *        3                 
+        *          
+        *        4           
+        *          
+        *        5   
+        */
 
 
+        // by 2 test
+        myGrid[1, 1].Owner = owner;
+        myGrid[1, 2].Owner = owner;
+        myGrid[1, 3].Owner = owner;
+        myGrid[2, 2].Owner = owner;
+        myGrid[2, 3].Owner = owner;
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    //[UnityTest]
-    //public IEnumerator NewTestScriptWithEnumeratorPasses()
-    //{
-    // Use the Assert class to test conditions.
-    // Use yield to skip a frame.
-    //   yield return null;
-    //}
+        Assert.IsTrue(myGrid[2, 2].Alive);
+
+        myGrid.Advance(owner);
+
+        Assert.IsFalse(myGrid[2, 2].Alive); // Should be dead
+
+    }
+
+    
+    private CellularAutomaton.Grid SetupTestGrid(int x,int y)
+    {
+        CellularAutomaton.Grid myGrid = null;
+
+        try
+        {
+            myGrid = new CellularAutomaton.Grid(x, y);
+        }
+        catch (System.Exception)
+        {
+            Assert.Fail("Constructor Exception Error");
+        }
+        finally
+        {
+            if (myGrid == null) { Assert.Fail("Null Array Error"); }
+
+        }
+        return myGrid;
+    }
 }
