@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,8 @@ namespace CellularAutomaton
 {
     public class Grid
     {
-        
+        public event EventHandler onGenerationComplete;
+
         private DenseArray<Cell> _cells = null;
 
         public Grid(int x, int y)
@@ -92,6 +94,7 @@ namespace CellularAutomaton
                 }
             }
             _cells = next._cells;
+            onGenerationComplete?.Invoke(this,new EventArgs());
         }   
     }
 }
